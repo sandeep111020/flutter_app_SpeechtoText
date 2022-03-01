@@ -25,78 +25,203 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 class _MyHomePageState extends State<MyHomePage> {
+  late int text;
+  late int title;
+  bool hide=false;
+  var desig="Welcome";
   @override
+  void _setText() {
+    setState(() {
+      hide=true;
+      text=title;
+      desig=titletext();
+    });
+  }
+  String titletext() {
+
+    var title="";
+    if(text==1){
+      title="doctor";
+    }else if(text==2){
+      title="Hospital Management";
+    }else if(text==3){
+      title="Medical Store";
+    }else{
+      title="Patient";
+    }
+    return "Welcome $title";
+  }
+
+  Widget _buildPopupDialog(BuildContext context) {
+    return AlertDialog(
+      title:  Text(desig),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: [
+              Visibility(
+                visible: text<=4?true:false,
+                child:RaisedButton(
+                  onPressed:(){
+
+
+
+                  },
+                  child: Text("Patient"),
+                ), ),
+              Visibility(
+                visible: text<=3 ?true:false,
+                child:RaisedButton(
+                  onPressed:(){
+
+                  },
+                  child: Text("Medical Store"),
+                ), ),
+            ],
+          ),
+          Row(
+            children: [
+              Visibility(
+                visible: text<=2 ?true:false,
+                child:RaisedButton(
+                  onPressed:(){
+
+                  },
+
+                  child: Text("Hospital Mangement"),
+                ), ),
+              Visibility(
+                visible: text==1?true:false,
+                child:RaisedButton(
+                  onPressed:(){
+                  },
+
+                  child: Text("Doctor"),
+                ), ),
+            ],
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        new Row(
+          children: [
+
+
+
+
+          ],
+        )
+      ],
+    );
+  }
   Widget build(BuildContext context) {
     return Scaffold(
-        body: FutureBuilder(
-          future: ReadJsonData(),
-          builder: (context, data) {
-            if (data.hasError) {
-              return Center(child: Text("${data.error}"));
-            } else if (data.hasData) {
-              var items = data.data as List<datamodel>;
-              return ListView.builder(
-                  itemCount: items == null ? 0 : items.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      elevation: 5,
-                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      child: Container(
-                        padding: EdgeInsets.all(8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              child: Image(
-                                image:
-                                NetworkImage(items[index].imageURL.toString()),
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                            Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.only(bottom: 8),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 8, right: 8),
-                                        child: items[index].gender.toString()=="Male"?Text(
-                                          "Mr "+items[index].name.toString(),
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ):Text(
-                                          "Ms "+items[index].name.toString(),
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10,),
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 8, right: 8),
-                                        child: Text(items[index].description.toString()),
-                                      )
-                                    ],
-                                  ),
-                                ))
-                          ],
-                        ),
-                      ),
-                    );
-                  });
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
+      body: Column(
+        children: [
+
+          Visibility(
+            visible: hide==false,
+            child: TextField(
+            onChanged: (value) => title = int.parse(value),
+            decoration: InputDecoration(hintText: "enter id"),
+          ),),
+          Visibility(
+            visible: hide==false,
+            child: RaisedButton(onPressed: _setText,
+            child: Text("Submit"),),),
+
+          Text(desig),
+    Visibility(
+      visible: hide,
+      child:  RaisedButton(
+      child: Text(
+        'Show Pop-up',
+        style: TextStyle(
+          color: Colors.white,
         ),
+      ),
+      color: Colors.black,
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => _buildPopupDialog(context),
+        );
+      },
+    ),)
+
+        ],
+      ),
+        // body: FutureBuilder(
+        //   future: ReadJsonData(),
+        //   builder: (context, data) {
+        //     if (data.hasError) {
+        //       return Center(child: Text("${data.error}"));
+        //     } else if (data.hasData) {
+        //       var items = data.data as List<datamodel>;
+        //       return ListView.builder(
+        //           itemCount: items == null ? 0 : items.length,
+        //           itemBuilder: (context, index) {
+        //             return Card(
+        //               elevation: 5,
+        //               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        //               child: Container(
+        //                 padding: EdgeInsets.all(8),
+        //                 child: Row(
+        //                   mainAxisAlignment: MainAxisAlignment.center,
+        //                   crossAxisAlignment: CrossAxisAlignment.center,
+        //                   children: [
+        //                     Container(
+        //                       width: 50,
+        //                       height: 50,
+        //                       child: Image(
+        //                         image:
+        //                         NetworkImage(items[index].imageURL.toString()),
+        //                         fit: BoxFit.fill,
+        //                       ),
+        //                     ),
+        //                     Expanded(
+        //                         child: Container(
+        //                           padding: EdgeInsets.only(bottom: 8),
+        //                           child: Column(
+        //                             mainAxisAlignment: MainAxisAlignment.center,
+        //                             crossAxisAlignment: CrossAxisAlignment.start,
+        //                             children: [
+        //                               Padding(
+        //                                 padding: EdgeInsets.only(left: 8, right: 8),
+        //                                 child: items[index].gender.toString()=="Male"?Text(
+        //                                   "Mr "+items[index].name.toString(),
+        //                                   style: TextStyle(
+        //                                       fontSize: 16,
+        //                                       fontWeight: FontWeight.bold),
+        //                                 ):Text(
+        //                                   "Ms "+items[index].name.toString(),
+        //                                   style: TextStyle(
+        //                                       fontSize: 16,
+        //                                       fontWeight: FontWeight.bold),
+        //                                 ),
+        //                               ),
+        //                               SizedBox(height: 10,),
+        //                               Padding(
+        //                                 padding: EdgeInsets.only(left: 8, right: 8),
+        //                                 child: Text(items[index].description.toString()),
+        //                               )
+        //                             ],
+        //                           ),
+        //                         ))
+        //                   ],
+        //                 ),
+        //               ),
+        //             );
+        //           });
+        //     } else {
+        //       return Center(
+        //         child: CircularProgressIndicator(),
+        //       );
+        //     }
+        //   },
+        // ),
         floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -115,5 +240,11 @@ class _MyHomePageState extends State<MyHomePage> {
     final list = json.decode(jsondata) as List<dynamic>;
     return list.map((e) => datamodel.fromJson(e)).toList();
   }
+
+
+
+
+
+
 }
 
